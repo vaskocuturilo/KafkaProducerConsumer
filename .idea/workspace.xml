@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ee457add-695b-4590-9c7e-bbfea8fb25cb" name="Changes" comment="DV-0001: Base Golang project.">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/java-ci-pr-validation.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/golang/consumer/consumer_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/golang/producer/producer_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/main/java/com/example/java/dto/OrderDto.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/main/java/com/example/java/kafka/consumer/KafkaConsumerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/main/java/com/example/java/kafka/producer/KafkaProducerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/main/java/com/example/java/rest/RestControllerV1.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/main/java/com/example/java/service/IMessageService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/main/java/com/example/java/service/MessagesService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/test/java/com/example/java/kafka/consumer/KafkaConsumerServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/test/java/com/example/java/kafka/producer/KafkaProducerServiceTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/test/java/com/example/java/rest/RestControllerV1Test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/test/java/com/example/java/utils/DataUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/java/src/test/resources/application-test.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/golang/consumer/Consumer.go" beforeDir="false" afterPath="$PROJECT_DIR$/golang/consumer/Consumer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/golang/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/golang/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/golang/producer/Producer.go" beforeDir="false" afterPath="$PROJECT_DIR$/golang/producer/Producer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/golang/utils/Utils.go" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///opt/homebrew/opt/go/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;vaskocuturilo&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/vaskocuturilo/KafkaProducerConsumer.git&quot;,
+    &quot;accountId&quot;: &quot;70945ed8-88c4-46dd-a5f5-562e10de6a88&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3ApwRA1bfSX6XimmAhhesFzRsTD" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Docker.docker-compose-brokers-with-kraft.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Docker.docker-compose-brokers-with-zookeeper.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
+    &quot;Go Build.go build KafkaProducerConsumer.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.rest-api | #1.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.rest-api_2 | #1.executor&quot;: &quot;Run&quot;,
+    &quot;HTTP Request.rest-api_2 | #2.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/vaskocuturilo/IdeaProjects/KafkaProducerConsumer/.github/workflows&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/Users/vaskocuturilo/IdeaProjects/KafkaProducerConsumer/golang/main.go&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/.github/workflows" />
+      <recent name="$PROJECT_DIR$/golang" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/golang" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationStatuses">
+      <map>
+        <entry key="HttpClient.HttpRequestRunConfigurationType">
+          <value>
+            <map>
+              <entry key="rest-api_2 | #1" value="STOPPED" />
+              <entry key="rest-api_2 | #2" value="STOPPED" />
+            </map>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="RunManager" selected="Go Build.go build KafkaProducerConsumer">
+    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
+      <module name="KafkaProducerConsumer" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="FILE" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go build KafkaProducerConsumer" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="KafkaProducerConsumer" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <package value="KafkaProducerConsumer" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="GoTestRunConfiguration" factoryName="Go Test">
+      <module name="KafkaProducerConsumer" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="DIRECTORY" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <configuration name="rest-api_2 | #1" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/rest-api_2.http" executionIdentifier="#1" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration name="rest-api_2 | #2" type="HttpClient.HttpRequestRunConfigurationType" factoryName="HTTP Request" temporary="true" nameIsGenerated="true" path="$APPLICATION_CONFIG_DIR$/scratches/rest-api_2.http" executionIdentifier="#2" index="2" runType="Run single request">
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose-brokers-with-kraft.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose-brokers-with-kraft.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose-brokers-with-zookeeper.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose-brokers-with-zookeeper.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build KafkaProducerConsumer" />
+        <item itemvalue="HTTP Request.rest-api_2 | #2" />
+        <item itemvalue="HTTP Request.rest-api_2 | #1" />
+        <item itemvalue="Docker.docker-compose-brokers-with-zookeeper.yml: Compose Deployment" />
+        <item itemvalue="Docker.docker-compose-brokers-with-kraft.yml: Compose Deployment" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ee457add-695b-4590-9c7e-bbfea8fb25cb" name="Changes" comment="" />
+      <created>1773302808962</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1773302808962</updated>
+      <workItem from="1773302809836" duration="12221000" />
+      <workItem from="1773333388178" duration="718000" />
+      <workItem from="1773334156857" duration="15000" />
+      <workItem from="1773388823478" duration="5738000" />
+      <workItem from="1773398604612" duration="1107000" />
+      <workItem from="1773399772495" duration="1832000" />
+      <workItem from="1773649723939" duration="97000" />
+      <workItem from="1773649832225" duration="61000" />
+      <workItem from="1773649897194" duration="54000" />
+      <workItem from="1773649953716" duration="11000" />
+      <workItem from="1773650020777" duration="33000" />
+      <workItem from="1773738773667" duration="55000" />
+      <workItem from="1773739508715" duration="34000" />
+      <workItem from="1773741091758" duration="12000" />
+      <workItem from="1773741105638" duration="30000" />
+      <workItem from="1773822510255" duration="9000" />
+      <workItem from="1773822524529" duration="4000" />
+      <workItem from="1773822538500" duration="114000" />
+      <workItem from="1773825848550" duration="24000" />
+      <workItem from="1773825881377" duration="72000" />
+      <workItem from="1773825956797" duration="6000" />
+      <workItem from="1773825981802" duration="13000" />
+      <workItem from="1773826342069" duration="13000" />
+      <workItem from="1773826657892" duration="11000" />
+      <workItem from="1773826687252" duration="11000" />
+    </task>
+    <task id="LOCAL-00001" summary="DV-0001: Base Golang project.">
+      <option name="closed" value="true" />
+      <created>1773400373130</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1773400373130</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="DV-0001: Base Golang project." />
+    <option name="LAST_COMMIT_MESSAGE" value="DV-0001: Base Golang project." />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

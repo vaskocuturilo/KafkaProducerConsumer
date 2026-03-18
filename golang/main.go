@@ -33,11 +33,11 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/send", kp.SendHandler)
-	mux.HandleFunc("/receive", kc.GetHandler)
+	mux.HandleFunc("/pull", kc.GetHandler)
 
-	srv := http.Server{Addr: "localhost:8091", Handler: mux}
+	srv := http.Server{Addr: "localhost:8080", Handler: mux}
 
-	fmt.Printf("The Server running at http://localhost:8091 \n")
+	fmt.Printf("The Server running at http://localhost:8080 \n")
 
 	err = srv.ListenAndServe()
 

@@ -10,8 +10,14 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
+type KafkaConsumer interface {
+	ReadMessage(timeout time.Duration) (*kafka.Message, error)
+	StoreMessage(msg *kafka.Message) ([]kafka.TopicPartition, error)
+	Close() error
+}
+
 type KafkaService struct {
-	Consumer *kafka.Consumer
+	Consumer KafkaConsumer
 }
 
 func NewKafKaConsumer(servers string, topics []string) (*KafkaService, error) {
@@ -72,6 +78,7 @@ func (ks *KafkaService) GetHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(order)
 	if err != nil {
 		return
