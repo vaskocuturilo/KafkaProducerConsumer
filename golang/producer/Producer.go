@@ -2,20 +2,23 @@ package producer
 
 import (
 	"KafkaProducerConsumer/dto"
-	"KafkaProducerConsumer/utils"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/google/uuid"
 )
 
 const KafkaTopic = "sandbox"
 
+type KafkaClient interface {
+	Produce(msg *kafka.Message, deliveryChan chan kafka.Event) error
+	Close()
+}
+
 type KafkaService struct {
-	Producer *kafka.Producer
+	Producer KafkaClient
 }
 
 func NewKafKaProducer(servers string) (*KafkaService, error) {
@@ -66,16 +69,22 @@ func (ks *KafkaService) SendHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	topic := KafkaTopic
+	var order dto.OrderDto
 
-	order := dto.OrderDto{
-
-		ID: uuid.New().String(),
-
-		ProductId: uuid.New().String(),
-
-		Amount: utils.RandRange(1, 456000),
+	if err := json.NewDecoder(r.Body).Decode(&order); err != nil {
+		log.Printf("Decode payload error: %v", err)
+		http.Error(w, "Failed to Decode payload", http.StatusBadRequest)
+		return
 	}
+
+	if order.ID == "" || order.Amount <= 0 {
+		http.Error(w, "Missing required order fields", http.StatusBadRequest)
+		return
+	}
+
+	log.Printf("Processing order: %s for product: %s", order.ID, order.ProductId)
+
+	topic := KafkaTopic
 
 	err := ks.sendMessage(topic, order)
 
@@ -85,6 +94,17 @@ func (ks *KafkaService) SendHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "The OrderDto sent and confirmed by Kafka")
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	response := struct {
+		Status  string `json:"status"`
+		OrderID string `json:"order_id"`
+	}{
+		Status:  "Success. The order sent and confirmed by Kafka",
+		OrderID: order.ID,
+	}
+
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Failed to encode response: %v", err)
+	}
 }
