@@ -4,7 +4,6 @@ import (
 	"KafkaProducerConsumer/dto"
 	"encoding/json"
 	"log"
-	"net/http"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -13,6 +12,7 @@ import (
 type KafkaConsumer interface {
 	ReadMessage(timeout time.Duration) (*kafka.Message, error)
 	StoreMessage(msg *kafka.Message) ([]kafka.TopicPartition, error)
+	CommitMessage(msg *kafka.Message) ([]kafka.TopicPartition, error)
 	Close() error
 }
 
@@ -24,7 +24,7 @@ func NewKafKaConsumer(servers string, topics []string) (*KafkaService, error) {
 	c, err := kafka.NewConsumer(
 		&kafka.ConfigMap{
 			"bootstrap.servers":        servers,
-			"group.id":                 "foo",
+			"group.id":                 "order-service",
 			"auto.offset.reset":        "earliest",
 			"session.timeout.ms":       6000,
 			"enable.auto.offset.store": false})
@@ -38,49 +38,41 @@ func NewKafKaConsumer(servers string, topics []string) (*KafkaService, error) {
 	return &KafkaService{Consumer: c}, err
 }
 
-func (ks *KafkaService) GetHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
-		return
-	}
+func (ks *KafkaService) StartWorker() {
+	log.Println("Kafka Worker started. Listening for messages...")
 
-	msg, err := ks.Consumer.ReadMessage(2 * time.Second)
+	for {
+		msg, err := ks.Consumer.ReadMessage(1 * time.Second)
 
-	if err != nil {
-		if err.(kafka.Error).Code() == kafka.ErrTimedOut {
-			http.Error(w, "No message available", http.StatusNoContent)
-		} else {
-			http.Error(w, "Kafka Error: "+err.Error(), http.StatusInternalServerError)
+		if err != nil {
+			if kerr, ok := err.(kafka.Error); ok && kerr.Code() == kafka.ErrTimedOut {
+				continue
+			}
+			log.Printf("Consumer error: %v", err)
+			continue
 		}
-		return
-	}
 
-	var order dto.OrderDto
+		var order dto.OrderDto
+		if err := json.Unmarshal(msg.Value, &order); err != nil {
+			log.Printf("Failed to decode message: %v", err)
+			continue
+		}
 
-	if err := json.Unmarshal(msg.Value, &order); err != nil {
-		http.Error(w, "Malformed JSON in Kafka", http.StatusInternalServerError)
-		return
-	}
+		log.Printf("📥 PROCESSED: OrderID=%s, Amount=%d [Partition: %d]",
+			order.ID, order.Amount, msg.TopicPartition.Partition)
 
-	log.Printf("Success consumer message: "+
-		"Metadata: %v, Topic: %v, Partiotion: %v, Offset: %v, Key: %v, Value: %v",
-		msg.TopicPartition.Metadata,
-		msg.TopicPartition.Topic,
-		msg.TopicPartition.Partition,
-		msg.TopicPartition.Offset,
-		msg.Key,
-		msg.Value)
+		_, err = ks.Consumer.StoreMessage(msg)
 
-	_, err = ks.Consumer.StoreMessage(msg)
+		if err != nil {
+			log.Printf("Failed to store offset: %v", err)
+			continue
+		}
 
-	if err != nil {
-		log.Printf("Failed to store offset: %v", err)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	err = json.NewEncoder(w).Encode(order)
-	if err != nil {
-		return
+		offsets, err := ks.Consumer.CommitMessage(msg)
+		if err != nil {
+			log.Printf("❌ Failed to commit offset to broker: %v", err)
+		} else {
+			log.Printf("💾 Offset committed to broker: %v", offsets)
+		}
 	}
 }

@@ -3,8 +3,6 @@ package consumer
 import (
 	"KafkaProducerConsumer/dto"
 	"encoding/json"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -12,8 +10,9 @@ import (
 )
 
 type MockConsumer struct {
-	ReadMessageFunc  func(timeout time.Duration) (*kafka.Message, error)
-	StoreMessageFunc func(msg *kafka.Message) ([]kafka.TopicPartition, error)
+	ReadMessageFunc   func(timeout time.Duration) (*kafka.Message, error)
+	StoreMessageFunc  func(msg *kafka.Message) ([]kafka.TopicPartition, error)
+	CommitMessageFunc func(msg *kafka.Message) ([]kafka.TopicPartition, error)
 }
 
 func (m *MockConsumer) ReadMessage(timeout time.Duration) (*kafka.Message, error) {
@@ -24,59 +23,41 @@ func (m *MockConsumer) StoreMessage(msg *kafka.Message) ([]kafka.TopicPartition,
 	return m.StoreMessageFunc(msg)
 }
 
+func (m *MockConsumer) CommitMessage(msg *kafka.Message) ([]kafka.TopicPartition, error) {
+	return m.CommitMessageFunc(msg)
+}
+
 func (m *MockConsumer) Close() error { return nil }
 
-func TestKafkaService_GetHandler_Success(t *testing.T) {
-	order := dto.OrderDto{ID: "order-999", Amount: 450}
-	orderBytes, _ := json.Marshal(order)
+func TestStartWorker_Success(t *testing.T) {
+	done := make(chan bool) // Signal to stop the test
 	topic := "sandbox"
+	order := dto.OrderDto{ID: "test-1", Amount: 100}
+	val, _ := json.Marshal(order)
 
 	mock := &MockConsumer{
 		ReadMessageFunc: func(timeout time.Duration) (*kafka.Message, error) {
 			return &kafka.Message{
 				TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: 0, Offset: 1},
-				Value:          orderBytes,
+				Value:          val,
 			}, nil
 		},
 		StoreMessageFunc: func(msg *kafka.Message) ([]kafka.TopicPartition, error) {
+			return nil, nil
+		},
+		CommitMessageFunc: func(msg *kafka.Message) ([]kafka.TopicPartition, error) {
+			done <- true
 			return nil, nil
 		},
 	}
 
 	ks := &KafkaService{Consumer: mock}
 
-	req := httptest.NewRequest("GET", "/pull", nil)
-	rr := httptest.NewRecorder()
+	go ks.StartWorker()
 
-	ks.GetHandler(rr, req)
-
-	if rr.Code != http.StatusOK {
-		t.Errorf("Expected status 200, got %d", rr.Code)
-	}
-
-	var response dto.OrderDto
-	json.Unmarshal(rr.Body.Bytes(), &response)
-	if response.ID != "order-999" {
-		t.Errorf("Expected order ID order-999, got %s", response.ID)
-	}
-}
-
-func TestGetHandler_Timeout(t *testing.T) {
-	mock := &MockConsumer{
-		ReadMessageFunc: func(timeout time.Duration) (*kafka.Message, error) {
-			// Simulate Kafka timeout error
-			return nil, kafka.NewError(kafka.ErrTimedOut, "Local: Timed out", false)
-		},
-	}
-
-	ks := &KafkaService{Consumer: mock}
-
-	req := httptest.NewRequest("GET", "/pull", nil)
-	rr := httptest.NewRecorder()
-
-	ks.GetHandler(rr, req)
-
-	if rr.Code != http.StatusNoContent {
-		t.Errorf("Expected status 204 for timeout, got %d", rr.Code)
+	select {
+	case <-done:
+	case <-time.After(3 * time.Second):
+		t.Fatal("Test timed out: Worker never committed the message")
 	}
 }
