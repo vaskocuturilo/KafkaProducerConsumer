@@ -22,22 +22,50 @@ type KafkaService struct {
 }
 
 func NewKafKaProducer(servers string) (*KafkaService, error) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": servers, "enable.idempotence": true, "acks": "all"})
+	p, err := kafka.NewProducer(&kafka.ConfigMap{
+		"bootstrap.servers":   servers,
+		"enable.idempotence":  true,
+		"retries":             5,
+		"retry.backoff.ms":    100,
+		"delivery.timeout.ms": 30000,
+		"acks":                "all",
+	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &KafkaService{Producer: p}, nil
+	ks := &KafkaService{Producer: p}
+
+	go func() {
+		for e := range p.Events() {
+			switch ev := e.(type) {
+			case *kafka.Message:
+				if ev.TopicPartition.Error != nil {
+					log.Printf("Delivery failed for Order %s: %v", ev.Value, ev.TopicPartition.Error)
+				} else {
+					log.Printf("Delivered to %v at offset %v", ev.TopicPartition.Topic, ev.TopicPartition.Offset)
+				}
+			}
+		}
+	}()
+
+	return ks, nil
 }
 
 func (ks *KafkaService) sendMessage(topic string, order dto.OrderDto) error {
-	value, _ := json.Marshal(order)
+	value, err := json.Marshal(order)
 
-	deliveryChan := make(chan kafka.Event)
+	if err != nil {
+		return fmt.Errorf("marshal failed: %w", err)
+	}
 
-	err := ks.Producer.Produce(&kafka.Message{
+	log.Println("1. Starting Produce")
+	deliveryChan := make(chan kafka.Event, 1)
+
+	err = ks.Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
+		Key:            []byte(order.ID),
 		Value:          value,
 	}, deliveryChan)
 
@@ -45,6 +73,7 @@ func (ks *KafkaService) sendMessage(topic string, order dto.OrderDto) error {
 		return fmt.Errorf("produced failed: %w", err)
 	}
 
+	log.Println("2. Waiting for deliveryChan")
 	e := <-deliveryChan
 	m := e.(*kafka.Message)
 
@@ -60,6 +89,7 @@ func (ks *KafkaService) sendMessage(topic string, order dto.OrderDto) error {
 
 	close(deliveryChan)
 
+	log.Println("3. Received event")
 	return nil
 }
 
@@ -68,6 +98,8 @@ func (ks *KafkaService) SendHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
 	}
+
+	defer r.Body.Close()
 
 	var order dto.OrderDto
 

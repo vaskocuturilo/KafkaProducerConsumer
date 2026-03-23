@@ -3,10 +3,15 @@ package main
 import (
 	"KafkaProducerConsumer/consumer"
 	"KafkaProducerConsumer/producer"
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 const (
@@ -30,18 +35,30 @@ func main() {
 		log.Fatalf("Failed to init Kafka: %v", err)
 	}
 
+	go kc.StartWorker()
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/send", kp.SendHandler)
-	mux.HandleFunc("/pull", kc.GetHandler)
 
 	srv := http.Server{Addr: "localhost:8080", Handler: mux}
 
-	fmt.Printf("The Server running at http://localhost:8080 \n")
+	done := make(chan os.Signal, 1)
 
-	err = srv.ListenAndServe()
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
-	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Fatalf("Critical error: %v", err)
-	}
+	go func() {
+		fmt.Printf("Server running at http://localhost:8080\n")
+		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalf("Server error: %v", err)
+		}
+	}()
+
+	<-done
+	fmt.Println("\n Shutting down gracefully...")
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	kc.Consumer.Close()
+	srv.Shutdown(ctx)
 }
