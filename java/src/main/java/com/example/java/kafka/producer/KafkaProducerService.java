@@ -26,11 +26,11 @@ public class KafkaProducerService {
     public CompletableFuture<SendResult<Long, OrderDto>> sendMessage(final OrderDto order) {
         log.info("Sending order: {} to topic: {}", order, topicName);
 
-        final long orderId = order.getId();
+        final long userId = order.getUserId();
 
-        log.info("Attempting to send order: {} with key: {}", order.getId(), orderId);
+        log.info("Attempting to send order: {} with key: {}", order.getId(), userId);
 
-        return kafkaTemplate.send(topicName, orderId, order).whenComplete((result, exception) -> {
+        return kafkaTemplate.send(topicName, userId, order).whenComplete((result, exception) -> {
             if (Objects.isNull(exception)) {
                 log.info("Successfully sent message to topic {} [partition: {}, offset: {}]",
                         result.getRecordMetadata().topic(),

@@ -6,10 +6,11 @@ import java.math.BigDecimal;
 
 public class DataUtils {
 
-    public static OrderDto getTuvValueDtoPersisted() {
+    public static OrderDto buildSampleOrder() {
         return OrderDto.builder()
                 .id(1L)
                 .productId(1L)
+                .userId(1L)
                 .amount(new BigDecimal(100))
                 .build();
     }

@@ -2,46 +2,36 @@ package com.example.java.kafka.consumer;
 
 import com.example.java.dto.OrderDto;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Objects;
 
-
-@Slf4j
 @Service
+@Slf4j
 public class KafkaConsumerService {
-    private final DefaultKafkaConsumerFactory<Long, OrderDto> defaultKafkaConsumerFactory;
 
-    public KafkaConsumerService(DefaultKafkaConsumerFactory<Long, OrderDto> defaultKafkaConsumerFactory) {
-        this.defaultKafkaConsumerFactory = defaultKafkaConsumerFactory;
+    @KafkaListener(
+            topics = "${topic.name}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "kafkaListenerContainerFactory"
+    )
+    @KafkaHandler
+    public void consumeMessage(
+            @Payload OrderDto order,
+            @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+            @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
+            @Header(KafkaHeaders.OFFSET) long offset
+    ) {
+        log.info("Successfully consumed from Topic: {}, Partition: {}, Offset: {}", topic, partition, offset);
+        log.info("Processing Order Data: ID: = {} (USER_ID: {}), ORDER: {}", order.getId(), order.getUserId(), order);
     }
 
-    public OrderDto receiveNextMessage(String topic) {
-        try (Consumer<Long, OrderDto> consumer = defaultKafkaConsumerFactory.createConsumer()) {
-            consumer.subscribe(Collections.singletonList(topic));
-
-            ConsumerRecords<Long, OrderDto> records = consumer.poll(Duration.ofSeconds(5));
-
-            if (Objects.nonNull(records) && !records.isEmpty()) {
-
-                ConsumerRecord<Long, OrderDto> receive = records.iterator().next();
-
-                consumer.commitSync();
-
-                log.info("IN receiveNextMessage:  The message from Kafka has been received => {}", receive.value());
-
-                return receive.value();
-            }
-        } catch (Exception exception) {
-            log.info("IN receiveNextMessage:  The message from Kafka has not been received, return null", exception);
-        }
-
-        return null;
+    @KafkaHandler(isDefault = true)
+    public void handleUnknown(Object unknown) {
+        log.warn("Received unknown message type: {}", unknown.getClass().getSimpleName());
     }
 }

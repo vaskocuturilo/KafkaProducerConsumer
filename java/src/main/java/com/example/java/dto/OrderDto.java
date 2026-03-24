@@ -1,19 +1,22 @@
 package com.example.java.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.DecimalMin;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Data
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    private long id;
-    private long productId;
+    @NonNull
+    private Long id;
+    @NonNull
+    private Long productId;
+    @NonNull
+    private Long userId;
+    @NonNull
+    @DecimalMin("0.00")
     private BigDecimal amount;
-
 }
