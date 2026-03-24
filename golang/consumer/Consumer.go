@@ -49,10 +49,11 @@ func (ks *KafkaService) StartWorker() {
 				continue
 			}
 			log.Printf("Consumer error: %v", err)
-			continue
+			time.Sleep(500 * time.Millisecond)
 		}
 
 		var order dto.OrderDto
+
 		if err := json.Unmarshal(msg.Value, &order); err != nil {
 			log.Printf("Failed to decode message: %v", err)
 			continue
@@ -61,18 +62,12 @@ func (ks *KafkaService) StartWorker() {
 		log.Printf("📥 PROCESSED: OrderID=%s, Amount=%d [Partition: %d]",
 			order.ID, order.Amount, msg.TopicPartition.Partition)
 
-		_, err = ks.Consumer.StoreMessage(msg)
+		_, err = ks.Consumer.CommitMessage(msg)
 
 		if err != nil {
 			log.Printf("Failed to store offset: %v", err)
 			continue
 		}
 
-		offsets, err := ks.Consumer.CommitMessage(msg)
-		if err != nil {
-			log.Printf("❌ Failed to commit offset to broker: %v", err)
-		} else {
-			log.Printf("💾 Offset committed to broker: %v", offsets)
-		}
 	}
 }
