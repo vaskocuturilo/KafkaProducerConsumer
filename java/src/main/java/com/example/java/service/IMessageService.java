@@ -8,7 +8,4 @@ import java.util.concurrent.CompletableFuture;
 public interface IMessageService {
 
     CompletableFuture<SendResult<Long, OrderDto>> triggerSend(OrderDto order);
-
-    OrderDto triggerPull();
-
 }
