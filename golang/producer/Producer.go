@@ -65,7 +65,7 @@ func (ks *KafkaService) sendMessage(topic string, order dto.OrderDto) error {
 
 	err = ks.Producer.Produce(&kafka.Message{
 		TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-		Key:            []byte(order.ID),
+		Key:            []byte(order.UserId),
 		Value:          value,
 	}, deliveryChan)
 
