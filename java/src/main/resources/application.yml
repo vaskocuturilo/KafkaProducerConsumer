@@ -16,7 +16,7 @@ spring:
       retries: 5
       retry:
         backoff:
-          ms: 100
+          ms: 500
 
     consumer:
       bootstrap-servers: localhost:9092,localhost:9093,localhost:9094
