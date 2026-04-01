@@ -2,9 +2,9 @@
 
 The demo project for Kafka working with Golang and Java.
 
-### This project was created to demonstrate how to work with the Kafka.
+### This project was created to demonstrate how to work with Kafka.
 
-- Create a REST API services (send/pull message to/from Kafka).
+- Create a REST API service (send/pull message to/from Kafka).
 - Add Apache Kafka.
 - Add Kafka UI.
 - Add Docker Compose.
