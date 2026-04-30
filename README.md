@@ -1,6 +1,6 @@
 ##   
 
-The demo project for Kafka working with Golang and Java.
+Golang and Java were the implementation languages for the demo project of Kafka.
 
 ### This project was created to demonstrate how to work with Kafka.
 
